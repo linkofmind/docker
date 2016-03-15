@@ -1,0 +1,29 @@
+mysql:
+  image: mysql:5.7
+  ports:
+    - "3306:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: password
+  volumes:
+    - ./my.cnf:/etc/mysql/conf.d/my.cnf
+  volumes_from:
+    - datastore
+  container_name: mysql
+php:
+  build: .
+  ports:
+    - "80:80"
+    - "443:443"
+  environment:
+    MYSQL_ROOT_PASSWORD: 'password'
+    DATABASE_HOST: mysql
+  volumes:
+    - ./src:/var/www/html
+  volumes_from:
+    - datastore
+  links:
+    - mysql
+  container_name: php
+datastore:
+  build: datastore
+  container_name: datastore
